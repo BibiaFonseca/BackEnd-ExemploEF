@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExemploEF.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250306143253_AddCategoria")]
-    partial class AddCategoria
+    [Migration("20250313142151_BancoDaBiAFunfando")]
+    partial class BancoDaBiAFunfando
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,45 @@ namespace ExemploEF.Migrations
                     b.HasKey("ClienteId");
 
                     b.ToTable("Clientes", (string)null);
+                });
+
+            modelBuilder.Entity("ExemploEF.Models.Produto", b =>
+                {
+                    b.Property<Guid>("ProdutoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoriaId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Estoque")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProdutoId");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.ToTable("Produtos", (string)null);
+                });
+
+            modelBuilder.Entity("ExemploEF.Models.Produto", b =>
+                {
+                    b.HasOne("ExemploEF.Models.Categoria", "Categoria")
+                        .WithMany("Produtos")
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("ExemploEF.Models.Categoria", b =>
+                {
+                    b.Navigation("Produtos");
                 });
 #pragma warning restore 612, 618
         }
